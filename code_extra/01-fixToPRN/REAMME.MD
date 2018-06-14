@@ -187,3 +187,140 @@ int main()
 	
 }
 ```
+
+中缀表达式转前缀表达式
+(1) 初始化两个栈：运算符栈S1和储存中间结果的栈S2；
+(2) 从右至左扫描中缀表达式；
+(3) 遇到操作数时，将其压入S2；
+(4) 遇到运算符时，比较其与S1栈顶运算符的优先级：
+(4-1) 如果S1为空，或栈顶运算符为右括号“)”，则直接将此运算符入栈；
+(4-2) 否则，若优先级比栈顶运算符的较高或相等，也将运算符压入S1；
+(4-3) 否则，将S1栈顶的运算符弹出并压入到S2中，再次转到(4-1)与S1中新的栈顶运算符相比较；
+(5) 遇到括号时：
+(5-1) 如果是右括号“)”，则直接压入S1；
+(5-2) 如果是左括号“(”，则依次弹出S1栈顶的运算符，并压入S2，直到遇到右括号为止，此时将这一对括号丢弃；
+(6) 重复步骤(2)至(5)，直到表达式的最左边；
+(7) 将S1中剩余的运算符依次弹出并压入S2；
+(8) 依次弹出S2中的元素并输出，结果即为中缀表达式对应的前缀表达式。
+```
+//中缀表达式转前缀表达式（波兰表达式）
+
+vector<char> infixToPN(const string &token)
+{
+	vector<char> v1;
+	int len = token.size();
+	if (len == 0)
+		return v1;
+
+	stack<char> opstack; //存放运算符的栈
+	stack<char> s2; //存放中间结果的栈
+	for (int i = len - 1; i >= 0; i--)
+	{
+		if (isDigit(token[i]))
+		{
+			s2.push(token[i]);
+		}
+		else
+		{
+			if (token[i] == ')') //遇到右括号，则直接压栈
+				opstack.push(token[i]);
+			else if (token[i] == '(')//遇到左括号，则依次弹出栈中的元素，直至遇到')'
+			{
+				while (opstack.top() != ')')
+				{
+					s2.push(opstack.top());
+					opstack.pop();
+				}
+				opstack.pop();
+			}
+			while (isOperator(token[i]))//如果是运算符
+			{
+				if (opstack.empty() || token[i] == ')' || pirority(token[i]) > pirority(opstack.top()))//遇到运算符优先级大于栈顶元素，压入栈中保存
+				{
+					opstack.push(token[i]);
+					break;
+				}else	//新来的元素优先级低， 则一直出栈
+				{				
+					s2.push(opstack.top());
+					opstack.pop();				
+				}
+			}
+			
+		}
+	}
+	while (!opstack.empty())//输入结束，将栈中剩余操作符出栈输出
+	{
+		s2.push(opstack.top());
+		opstack.pop();
+	}
+	while (!s2.empty())//输入结束，将栈中剩余操作符出栈输出
+	{
+		v1.push_back(s2.top());
+		s2.pop();
+	}
+	return v1;
+}
+
+//计算前缀表达式的值
+int evalPN(string &tokens)
+{
+	if (tokens.size() <= 0)
+		return 0;
+	stack<int> s1;//创建辅助栈
+	stack<int> s2;//创建结果栈
+	int left = 0, right = 0;//定义左/右操作数
+	int result = 0;//定义中间结果
+	string temp;
+	for (unsigned int i = 0; i < tokens.size(); i++)
+	{
+
+		if (isOperator(tokens[i]))//扫描运算符则入栈
+		{
+			s1.push(tokens[i]);
+		}
+		else if (tokens[i] == ' ')
+		{
+			if (temp.size() > 0)   //防止运算符后面跟分隔符，所以判断一下temp里面是否有数字
+			{
+				s2.push(atoi(temp.c_str()));
+				temp.clear();
+			}
+		}
+		else if (isDigit(tokens[i]) && s2.empty())
+		{
+			temp.push_back(tokens[i]);
+		}
+		else if (isDigit(tokens[i]) && !s1.empty() && !s2.empty())
+		{	
+			while (tokens[i] != ' ')
+			{
+				temp.push_back(tokens[i]);
+				i++;
+			}
+			if (temp.size() > 0)   //防止运算符后面跟分隔符，所以判断一下temp里面是否有数字
+			{
+				s2.push(atoi(temp.c_str()));
+				temp.clear();
+			}
+			
+			right = s2.top();
+			s2.pop();
+
+			left = s2.top();
+			s2.pop();
+
+			result = cal(left, right, s1.top());
+			s1.pop();
+			s2.push(result);//s2保留中间结果
+		}
+
+	}
+	if (!s2.empty())
+	{
+		result = s2.top();
+		s2.pop();
+	}
+
+	return result;
+}
+```
