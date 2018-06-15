@@ -5,6 +5,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <stack>
 
 using namespace std;
 
@@ -75,17 +76,17 @@ public:
 	bool empty() const { return treeSize == 0; }
 	int size() const { return treeSize; }
 	E* rootElement() const;
-	void makeTree(const E& element,                            //寻找根元素
+	void makeTree(const E& element,
 		linkedBinaryTree<E>&, linkedBinaryTree<E>&);
-	void preOrder(void(*theVisit)(binaryTreeNode<E>*))         //前序遍历
+	void preOrder(void(*theVisit)(binaryTreeNode<E>*))
 	{
 		visit = theVisit; preOrder(root);
 	}
-	void inOrder(void(*theVisit)(binaryTreeNode<E>*))        //中序遍历
+	void inOrder(void(*theVisit)(binaryTreeNode<E>*))
 	{
 		visit = theVisit; inOrder(root);
 	}
-	void postOrder(void(*theVisit)(binaryTreeNode<E>*))         //后序遍历
+	void postOrder(void(*theVisit)(binaryTreeNode<E>*))
 	{
 		visit = theVisit; postOrder(root);
 	}
@@ -93,7 +94,13 @@ public:
 	void preOrderOutput() { preOrder(output); cout << endl; }
 	void inOrderOutput() { inOrder(output); cout << endl; }
 	void postOrderOutput() { postOrder(output); cout << endl; }
-	void levelOrderOutput() { levelOrder(output); cout << endl; }      //层次遍历（非递归）
+	void levelOrderOutput() { levelOrder(output); cout << endl; }
+
+	//非递归前序、中序、后序遍历
+	void preOrder2();
+	void inOrder2();
+	void postOrder2();
+
 	void erase()
 	{
 		postOrder(dispose);
@@ -120,6 +127,8 @@ protected:
 	static void preOrder(binaryTreeNode<E> *t);
 	static void inOrder(binaryTreeNode<E> *t);
 	static void postOrder(binaryTreeNode<E> *t);
+
+	
 	static void dispose(binaryTreeNode<E> *t) { delete t; }
 	static void output(binaryTreeNode<E> *t)
 	{
@@ -132,7 +141,6 @@ protected:
 template<class E>
 void(*linkedBinaryTree<E>::visit)(binaryTreeNode<E>*);
 
-//递归构造数
 template<class E>
 void linkedBinaryTree<E>::makeTree(const E& element,
 	linkedBinaryTree<E>& left, linkedBinaryTree<E>& right)
@@ -147,7 +155,7 @@ void linkedBinaryTree<E>::makeTree(const E& element,
 	left.treeSize = right.treeSize = 0;
 }
 
-//寻找根元素
+
 template<class E>
 E* linkedBinaryTree<E>::rootElement() const
 {// Return NULL if no root. Otherwise, return pointer to root element.
@@ -170,6 +178,29 @@ void linkedBinaryTree<E>::preOrder(binaryTreeNode<E> *t)
 }
 
 template<class E>
+void linkedBinaryTree<E>::preOrder2()
+{// Preorder traversal.
+	stack<binaryTreeNode<E> *>s;
+	binaryTreeNode<E> *pCur = root; //定义当前结点
+	while (pCur != nullptr || !s.empty())
+	{
+		while (pCur != nullptr)
+		{
+			cout << pCur->element << " ";
+			s.push(pCur);
+			pCur = pCur->leftChild;
+		}
+		if (!s.empty())
+		{
+			pCur = s.top();
+			s.pop();
+			pCur = pCur->rightChild;
+		}
+	}
+	cout << endl;
+}
+
+template<class E>
 void linkedBinaryTree<E>::inOrder(binaryTreeNode<E> *t)
 {// Inorder traversal.
 	if (t != NULL)
@@ -178,6 +209,29 @@ void linkedBinaryTree<E>::inOrder(binaryTreeNode<E> *t)
 		linkedBinaryTree<E>::visit(t);
 		inOrder(t->rightChild);
 	}
+}
+
+template<class E>
+void linkedBinaryTree<E>::inOrder2()
+{
+	stack<binaryTreeNode<E> *>s;
+	binaryTreeNode<E> *pCur = root; //定义当前结点
+	while (pCur != nullptr || !s.empty())
+	{
+		while (pCur != nullptr)
+		{
+			s.push(pCur);
+			pCur = pCur->leftChild;
+		}
+		if (!s.empty())
+		{
+			pCur = s.top();
+			cout << pCur->element << " ";
+			s.pop();
+			pCur = pCur->rightChild;
+		}
+	}
+	cout << endl;
 }
 
 template<class E>
@@ -190,41 +244,93 @@ void linkedBinaryTree<E>::postOrder(binaryTreeNode<E> *t)
 		linkedBinaryTree<E>::visit(t);
 	}
 }
+//后序遍历非递归
+template<class E>
+void linkedBinaryTree<E>::postOrder2()
+{// Postorder traversal.
+	if (root == nullptr)
+		return;
+	stack<binaryTreeNode<E> *>s;
+	binaryTreeNode<E> *pCur = root; //定义当前结点
+	binaryTreeNode<E> *pPrev = nullptr; //前一次访问的结点
+	s.push(root);
+	while (!s.empty())
+	{
+		pCur = s.top();
+		if ((pCur->leftChild == nullptr && pCur->rightChild == nullptr) ||
+			(pPrev != nullptr && (pPrev == pCur->leftChild || pPrev == pCur->rightChild)))
+		{
+			cout << pCur->element << " ";
+			s.pop();
+			pPrev = pCur;
+		}
+		else {
+			if (pCur->rightChild != nullptr)
+				s.push(pCur->rightChild);
+			if (pCur->leftChild != nullptr)
+				s.push(pCur->leftChild);
+		}
+	}
+	cout << endl;
+}
 
+//广度优先遍历（层次遍历）
 template <class E>
 void linkedBinaryTree<E>::levelOrder(void(*theVisit)(binaryTreeNode<E> *))
 {// Level-order traversal.
 	queue<binaryTreeNode<E>*> q;
-	binaryTreeNode<E> *t = root;
-	while (t != NULL)
+	binaryTreeNode<E> *pCur = root;
+	q.push(root);
+	while (!q.empty())
 	{
-		theVisit(t);  // visit t
-		//cout << t->element << endl;
+		pCur = q.front();
+		q.pop();
+		theVisit(pCur);  // visit t
+		//cout << pCur->element << endl;
 					  // put t's children on queue
-		if (t->leftChild != NULL)
+		if (pCur->leftChild != NULL)
 		{
-			q.push(t->leftChild);
-			//cout << t->leftChild->element << endl;
+			q.push(pCur->leftChild);
+			//cout << pCur->leftChild->element << endl;
 		}
 			
-		if (t->rightChild != NULL)
+		if (pCur->rightChild != NULL)
 		{
-			q.push(t->rightChild);
-			//cout << t->rightChild->element << endl;
+			q.push(pCur->rightChild);
+			//cout << pCur->rightChild->element << endl;
 		}
-			
-
-		// get next node to visit
-		if (!q.empty())
-		{
-           t = q.front();
-		   q.pop();
-		}else
-		  break;
 	}
 		
 }
 
+
+//深度优先遍历 非递归实现  用栈实现， 先根， 然后右孩子， 最后左孩子
+template <class E>
+void linkedBinaryTree<E>::dfs(binaryTreeNode<E>* root, int s, vector<vector<int>> &re, vector<int> &trace) {
+	if (root == nullptr)
+		return;
+	stack<binaryTreeNode<E>*> s;
+	binaryTreeNode<E> *pCur = root;
+	s.push(root);
+	while (!s.empty())
+	{
+		pCur = s.top();
+		cout << pCur->element << " ";
+		s.pop();
+		if (pCur->rightChild != NULL)
+		{
+			q.push(pCur->rightChild);
+			//cout << pCur->rightChild->element << endl;
+		}
+		if (pCur->leftChild != NULL)
+		{
+			q.push(pCur->leftChild);
+			//cout << pCur->leftChild->element << endl;
+		}
+	}
+}
+
+//寻找从根开始到叶节点的路径上值之和为某一值的所有路径
 template <class E>
 vector<vector<int> > linkedBinaryTree<E>::FindPath(binaryTreeNode<E>* root, int expectNumber) {
 	vector<vector<int>> ret;
@@ -234,7 +340,8 @@ vector<vector<int> > linkedBinaryTree<E>::FindPath(binaryTreeNode<E>* root, int 
 	return ret;
 }
 
-//深度优先遍历 寻找从头到根上和为某值的所有路径
+
+//深度优先遍历   递归实现
 template <class E>
 void linkedBinaryTree<E>::dfs(binaryTreeNode<E>* root, int s, vector<vector<int>> &ret, vector<int> &trace) {
 	trace.push_back(root->element);
