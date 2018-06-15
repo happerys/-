@@ -141,6 +141,7 @@ protected:
 template<class E>
 void(*linkedBinaryTree<E>::visit)(binaryTreeNode<E>*);
 
+//原始子树法构建二叉树
 template<class E>
 void linkedBinaryTree<E>::makeTree(const E& element,
 	linkedBinaryTree<E>& left, linkedBinaryTree<E>& right)
@@ -155,7 +156,7 @@ void linkedBinaryTree<E>::makeTree(const E& element,
 	left.treeSize = right.treeSize = 0;
 }
 
-
+//根元素值
 template<class E>
 E* linkedBinaryTree<E>::rootElement() const
 {// Return NULL if no root. Otherwise, return pointer to root element.
@@ -165,7 +166,7 @@ E* linkedBinaryTree<E>::rootElement() const
 		return &root->element;
 }
 
-
+//前序遍历递归
 template<class E>
 void linkedBinaryTree<E>::preOrder(binaryTreeNode<E> *t)
 {// Preorder traversal.
@@ -176,7 +177,7 @@ void linkedBinaryTree<E>::preOrder(binaryTreeNode<E> *t)
 		preOrder(t->rightChild);
 	}
 }
-
+//前序遍历非递归
 template<class E>
 void linkedBinaryTree<E>::preOrder2()
 {// Preorder traversal.
@@ -199,7 +200,7 @@ void linkedBinaryTree<E>::preOrder2()
 	}
 	cout << endl;
 }
-
+//中序遍历递归
 template<class E>
 void linkedBinaryTree<E>::inOrder(binaryTreeNode<E> *t)
 {// Inorder traversal.
@@ -210,7 +211,7 @@ void linkedBinaryTree<E>::inOrder(binaryTreeNode<E> *t)
 		inOrder(t->rightChild);
 	}
 }
-
+//后序遍历非递归
 template<class E>
 void linkedBinaryTree<E>::inOrder2()
 {
@@ -233,7 +234,7 @@ void linkedBinaryTree<E>::inOrder2()
 	}
 	cout << endl;
 }
-
+//后序遍历递归
 template<class E>
 void linkedBinaryTree<E>::postOrder(binaryTreeNode<E> *t)
 {// Postorder traversal.
@@ -356,6 +357,7 @@ void linkedBinaryTree<E>::dfs(binaryTreeNode<E>* root, int s, vector<vector<int>
 	trace.pop_back();
 }
 
+//二叉树的最小深度
 template<class E>
 int linkedBinaryTree<E>::minDepth()
 {
@@ -387,6 +389,7 @@ int linkedBinaryTree<E>::minDepth()
 	return level;
 }
 
+//二叉树的高度
 template <class E>
 int linkedBinaryTree<E>::height(binaryTreeNode<E> *t)
 {// Return height of tree rooted at *t.
@@ -400,6 +403,7 @@ int linkedBinaryTree<E>::height(binaryTreeNode<E> *t)
 		return ++hr;
 }
 
+//二叉树使用前序和中序序列重构
 template <class E>
 binaryTreeNode<E>* linkedBinaryTree<E>::reConstruct(vector<int> pre,  vector<int> mid)
 {
