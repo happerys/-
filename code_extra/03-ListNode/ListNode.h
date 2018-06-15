@@ -181,3 +181,40 @@ ListNode *sortList(ListNode *head)
 
 	return merge(left, right);//归并
 }
+
+//在新建链表中寻找符合条件的结点位置
+ListNode* findInsertPos(ListNode *head, int val)
+{
+	ListNode* pNode = head;
+	ListNode* pPrev = nullptr;
+	while (pNode != nullptr && pNode->val <= val)
+	{
+		pPrev = pNode;
+		pNode = pNode->next;
+	}
+	return pPrev;
+}
+
+//链表的插入排序
+ListNode *insertionSortList(ListNode *head)
+{
+	if (head == nullptr || head->next == nullptr)
+		return head;
+	ListNode* pTick = new ListNode(-1); //新建链表头结点
+	//ListNode dummy(INT_MIN);
+	ListNode* pCurrent = head;//指向原来链表的头结点
+	ListNode* pHead = nullptr;
+	while (pCurrent != nullptr)
+	{
+		ListNode* pos = findInsertPos(pTick, pCurrent->val);  //在新建链表中寻找符合条件的结点位置
+		ListNode* pNext = pCurrent->next;  //保存当前节点的下一个节点
+		pCurrent->next = pos->next;    //将当前结点加入到新建链表中
+		pos->next = pCurrent;
+		pCurrent = pNext;             //当前结点下移
+	}
+	pHead = pTick->next;
+	delete pTick;
+	pTick = nullptr;
+	return pHead;
+}
+
