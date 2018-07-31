@@ -122,7 +122,7 @@ int FibonacciSearch(int a[], int value, int n)
 	return -1;
 }
 
-//索引表查找
+//索引表查找       
 struct IndexItem
 {
 	int index;//IndexKeyType index; IndexKeyType为事先定义的索引值类型
@@ -174,7 +174,8 @@ strcmp(K2, A[j].key) == 0
 	return j;
 */
 
-//分块查找
+//分块查找     分块查找属于索引查找，其对应的索引表为稀疏索引，具体地说，分块查找要求主表中每个子表（又称为块）之间是递增（或递减）有序的。
+//即前块中最大关键字必须小于后块中的最小关键字，但块内元素的排列可无序。它还要求索引值域为每块中的最大关键字。
 int Blocksch(int *A, indexlist B, int m, int K)
 {//利用主表A和大小为m的索引表B分块查找关键字为K的记录
 	int i, j;
