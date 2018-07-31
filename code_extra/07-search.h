@@ -1,7 +1,7 @@
 #pragma once
 //常用的七大查找算法：顺序查找，二分查找，插值查找、斐波那契查找查找、数表查找、分块查找、哈希查找
 //平均查找长度为：ASL = Pi*Ci   Pi：查找表中第i个数据元素的概率。     Ci：找到第i个数据元素时已经比较过的次数。
-//
+//https://blog.csdn.net/wtfmonking/article/details/17337703
 
 #include <iostream>
 using namespace std;
