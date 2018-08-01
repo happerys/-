@@ -70,7 +70,7 @@ void select_sort(int *list, int count)
 }
 
 //堆排序  
-//调整堆               建立大根堆 时间复杂度O（nlogn） 不稳定算法  空间复杂度O(1)
+//调整堆               建立大根堆 时间复杂度O（nlogn） 不稳定算法  空间复杂度O(1)   对于结点j，其子节点为2*j或者2*j+1
 void heap_adjust(int *list, int s, int m)
 {
 	int temp = list[s];
