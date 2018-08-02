@@ -197,7 +197,7 @@ void merge_sort(int *list, int count)
 int getNumInPos(int num, int pos)
 {
 	int temp = 1;
-	for (int i = 0; i < pos - 1; i++)
+	for (int i = 1; i < pos; i++)
 		temp *= 10;
 	return (num / temp) % 10;
 }
@@ -234,18 +234,17 @@ void RadixSort_MSD(vector<int> &a, int maxpos)
 	int len = a.size();
 	vector<vector<int>> radixArray(10);
 
-	int d = maxpos;
-	if (d >= 1 && len > 1)
+	if (maxpos >= 1 && len > 1)
 	{
 		for (int i = 0; i < len; i++)
 		{
-			int num = getNumInPos(a[i], d);
+			int num = getNumInPos(a[i], maxpos);
 			radixArray[num].push_back(a[i]);
 		}
 
 		for (int i = 0, j = 0; i < 10; i++)
 		{
-			RadixSort_MSD(radixArray[i], d - 1);//递归，对每个子桶从次高位开始分配
+			RadixSort_MSD(radixArray[i], maxpos - 1);//递归，对每个子桶从次高位开始分配
 			while (!radixArray[i].empty())
 			{
 				a[j++] = radixArray[i].front();
