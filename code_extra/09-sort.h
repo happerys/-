@@ -32,7 +32,7 @@ void shell_sort(int *list, int count)
 	int temp;
 	int increment = count;
 	int j;
-	while (increment > 1)
+	while (increment > 0)
 	{
 		increment /= 2;
 		for (int i = increment; i < count; i++)
