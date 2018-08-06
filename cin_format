@@ -1,0 +1,53 @@
+一、输入格式为：
+//5  输入数组维度
+/*********数组每一行的输入*********/
+//1 2 3
+//2 4
+//2 3
+//1 5
+//1 2
+输出n*n为的数组
+
+#include <string>
+#include <vector>
+#include <iostream>
+#include<sstream>
+using namespace std;
+
+
+int main()
+{
+	int n, num;
+	while (cin >> n )//数组维度为n*n
+	{
+		int tmp;
+		vector<vector<int> > v1(n, vector<int>(n, 0));//声明二维数组为n*n维，并初始化为0
+    /*****
+    二维数组初始化为空格
+    char ch = ' ';
+		vector<vector<char> > v1(n, vector<char>(n, ch));
+    ******/
+		string s;
+		cin.ignore();
+		for (int i = 0; i < n; i++)
+		{		
+			getline(cin, s);
+			istringstream iss(s);
+			int j = 0;
+			while ( j < n && iss >> v1[i][j++]);			
+		}
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < n; j++)
+			{
+				cout << v1[i][j] << " ";
+			}
+			cout << endl;
+		}
+		//system("pause");
+	}
+
+	return 0;
+}
+
+/********************************************/
