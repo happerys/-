@@ -1,0 +1,54 @@
+1.1 如何快速找到一个整数的两个最接近的因子：
+
+1. 将整数 n 开根，得到整数部分 integral_part；
+2. 倘若 n 对 integral_part 取余，余数为 0，说明可以整除，整数 n 的两个最接近的因子较小者等于 integral_part，较大者等于 n /  integral_part 的结果，注意此时二者可能相等；
+3. 倘若不能整除，则首先获取  integral_part 平方后的数 low 以及 （ integral_part + 1）平方后的数 high，比较两个数哪个数与整数 n 更接近，进而确定哪个数是较小因子的 “上界” flag；
+4. 从 “上界” - 1 开始，到 1 为止，找到第一个可以被整数 n 整数的数为止，这个数就是两个最接近的因子的较小者，另一个因子可以由 “n / 较小者” 来得到。
+
+来自 <https://blog.csdn.net/qq_21396469/article/details/75312489> 
+pair<int, int> gainClosestFactor(int n)
+{
+	int i;
+	int integral_part = (int)sqrt(n);  //获取开方后的整数部分
+	if(n % integral_part == 0)
+		return make_pair(integral_part, n / integral_part);
+	else
+	{
+		int flag;
+		int low = pow(integral_part, 2);        //判断那个距离n更近
+		int high = pow(integral_part + 1, 2);
+		if((n - low) >= (high - n))
+			flag = integral_part + 1;
+		else
+			flag = integral_part;
+		for(i = flag - 1; i > 0; i--)   //从上界-1开始，到1为止，寻找第一个可以被1整除的数
+		{
+			if(n % i == 0)
+				break;
+		}
+		return make_pair(i, n / i);
+	}
+}
+
+1.2 质数因子
+输入一个long型整数   180
+
+输出描述:
+按照从小到大的顺序输出它的所有质数的因子，以空格隔开。最后一个数后面也要有空格。 2 2 3 3 5
+
+    long input;
+    while (cin >> input)
+    {
+        for (int a = 2; a<= sqrt(input); a++)
+        {
+            //此处是while,把a整除结束才可加1
+            while (input%a == 0)
+            {
+                cout << a << ' ';
+                input = input / a;
+            }
+        }
+        if (input > 1) cout << input << ' ';
+    }
+
+
