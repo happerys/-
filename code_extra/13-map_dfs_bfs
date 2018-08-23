@@ -1,0 +1,86 @@
+从给定起点（一定为'.'），按照给定的若干跳跃（可以跨过障碍，但不可以落在'x'上），到达任意一个'.'的最小步骤次数集合中，选择一个最大的！
+输入：
+3 3   //表示地牢的长和宽
+...   //描述地牢，地牢将至少包含两个 '.'
+...
+...
+0 1   //出发位置（0 <= x0 < n, 0 <= y0 < m，左上角的坐标为 （0, 0），出发位置一定是 '.'）
+4     //牛牛合法的步长数, 接下来的 k 行，每行两个整数 dx, dy 表示每次可选择移动的行和列步长
+1 0   
+0 1
+-1 0
+0 -1
+输出
+3
+
+/*
+从给定起点（一定为'.'），按照给定的若干跳跃（可以跨过障碍，但不可以落在'x'上），到达任意一个'.'的最小步骤次数集合中，选择一个最大的！
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Point {
+	int x, y;
+	Point() {}
+	Point(int _x, int _y) :x(_x), y(_y) {}
+	Point go(int idx, vector<vector<int>> &direction) {
+		return Point(x + direction[idx][0], y + direction[idx][1]);
+	}
+	bool isOK(int n,int m, vector<vector<char>> &ground) {
+		return x >= 0 && y >= 0 && x< n && y<m && ground[x][y] == '.';
+	}
+};
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	
+	vector<vector<char>> ground(n, vector<char>(m));
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+		{
+			cin >> ground[i][j];
+		}
+
+	int start_x, start_y;//输入起点
+	cin >> start_x >> start_y;
+
+	int dcnt;//输入可移动的行和列的步长
+	cin >> dcnt;
+	
+	vector<vector<int>> direction(dcnt, vector<int>(2));
+	for (int i = 0; i<dcnt; i++) {
+		cin >> direction[i][0] >> direction[i][1];
+	}
+
+	
+	vector<vector<int>> dis(n, vector<int>(m, INT_MAX));
+	Point start;
+	start.x = start_x;
+	start.y = start_y;
+	dis[start_x][start_y] = 0;
+
+	queue<Point> q;
+	q.push(start);
+	while (!q.empty()) {
+		Point p0 = q.front(); 
+        q.pop();
+		for (int i = 0; i < dcnt; ++i) {
+			Point p1 = p0.go(i, direction);
+			if (p1.isOK(n, m, ground)) {
+				if (dis[p1.x][p1.y] > dis[p0.x][p0.y] + 1) {
+					dis[p1.x][p1.y] = dis[p0.x][p0.y] + 1;
+					q.push(p1);
+				}
+			}
+		}
+	}
+	int answer = 0;
+	for (int i = 0; i<n; i++) {
+		for (int j = 0; j<m; j++) {
+			if (ground[i][j] == '.') answer = max(answer, dis[i][j]);
+		}
+	}
+	printf("%d\n", answer == INT_MAX ? -1 : answer);
+	return 0;
+}
