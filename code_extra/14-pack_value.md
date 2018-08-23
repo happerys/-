@@ -1,10 +1,4 @@
 //https://blog.csdn.net/desirepath/article/details/71679170
-#include <iostream>
-#include <cstring>
-#include <algorithm>
-#include <vector>
-using namespace std;
-
 
 /**************************************1. 01背包**************************************************************/
 //优化空间复杂度  O(N)
@@ -31,6 +25,7 @@ using namespace std;
         4）代码
         //要求在每次主循环中我们以v ←V ... 0 的递减顺序计算dp[v]，这样才能保证计算dp[v] 时dp[v -Ci] 保存的是状态dp[i - 1; v - Ci] 的值
         //dp数组当前索引的值的计算依赖于前面索引的值，不会使用到被更新过的值
+        '''
         #include <iostream>
         #include <algorithm>
         #include <vector>
@@ -56,6 +51,7 @@ using namespace std;
         }
         return 0;
         }
+        '''
 /******************************完全背包问题*********************************************/
 //优化空间复杂度  O(N)
         1）题目：
@@ -82,7 +78,8 @@ using namespace std;
         4）代码
 ![image](https://upload-images.jianshu.io/upload_images/1727685-490e176d0890cc94.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/401)
         //优化空间复杂度  O(N)
-        #include <iostream>
+        
+   '''  #include <iostream>
         #include <algorithm>
         #include <vector>
         using namespace std;
@@ -109,6 +106,7 @@ using namespace std;
 
                 return 0;
         }
+     '''
 /***************************多重背包*****************************************************/
         1）题目：
         有n种物品和一个容量为w的背包。
