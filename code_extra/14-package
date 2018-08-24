@@ -141,30 +141,30 @@
         int w;//定义背包总容量
         //优化空间复杂度  O(N)
 
-        void ZeroOnePack(int ci, int wi, vector<int>&dp) {
+        void ZeroOnePack(int wi, int pi, vector<int>&dp) {
           for (int j = w; j >= 0; j--)
-            if (j >= ci)
-              dp[j] = max(dp[j], dp[j - ci] + wi);
+            if (j >= wi)
+              dp[j] = max(dp[j], dp[j - wi] + pi);
         }
 
-        void CompletePack(int ci, int wi, vector<int>&dp) {
+        void CompletePack(int wi, int pi, vector<int>&dp) {
           for (int j = 0; j <= w; j++)
-            if (j >= ci)
-              dp[j] = max(dp[j], dp[j - ci] + wi);
+            if (j >= wi)
+              dp[j] = max(dp[j], dp[j - wi] + pi);
         }
 
-        void MultiplePack(int ni, int ci, int wi, vector<int>&dp) {
-          if (ni * ci >= w) {
-            CompletePack(ci, wi, dp);
+        void MultiplePack(int ni, int wi, int pi, vector<int>&dp) {
+          if (ni * wi >= w) {
+            CompletePack(wi, pi, dp);
             return;
           }
           int k = 1, amount = ni;
           while (k < ni) {
-            ZeroOnePack(ci * k, wi * k, dp);
+            ZeroOnePack(wi * k, pi * k, dp);
             amount -= k;
             k *= 2;
           }
-          ZeroOnePack(ci * amount, wi * amount, dp);
+          ZeroOnePack(wi * amount, pi * amount, dp);
         }
 
         int main(void) {
