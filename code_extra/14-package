@@ -253,7 +253,7 @@
             cin >> ni >> wi >> pi;
             if (ni == 1) ZeroOnePack(wi, pi, dp);
             else if (ni == -1) CompletePack(wi, pi, dp);
-            MultiplePack(ni, wi, pi, dp);
+            else MultiplePack(ni, wi, pi, dp);
           }
           cout << dp[w] << endl;
           system("pause");
