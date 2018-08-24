@@ -469,8 +469,8 @@
         2）输入：
         测试用例数
         物品数 背包容量 根节点编号
-        第i个物品的ci wi di(依赖物品的编号，-1为不依赖其他物品)
-        4）测试文件：
+        第i个物品的wi pi di(依赖物品的编号，-1为不依赖其他物品)
+        3）测试文件：
         5 5 0
         1 2 -1
         2 7 0
@@ -485,3 +485,117 @@
         2 4 0
         2 7 2
         3 10 2
+         4）代码文件：
+        #include <iostream>
+        #include <algorithm>
+        #include <vector>
+        using namespace std;
+
+        #define maxN 100   //最大物品数
+        #define maxV 1000  //最大背包容量
+
+        int n, v;
+        int cnt = 0;
+        int head[maxN];
+        int wi[maxN], pi[maxN];
+        int f[maxN][maxV];
+
+        struct Edge {
+                int v, next;
+        } e[maxN - 1];
+
+        void addEdge(int u, int v) {
+                e[cnt].v = v;
+                e[cnt].next = head[u];
+                head[u] = cnt++;
+        }
+
+        void treeDP(int u) {
+                for (int i = wi[u]; i <= v; i++) {
+                        f[u][i] = pi[u];
+                }
+                for (int i = head[u]; i != -1; i = e[i].next) {
+                        int curr = e[i].v;
+                        treeDP(curr);
+                        for (int j = v; j >= 0; j--) {
+                                for (int k = j - wi[u]; k >= 0; k--) {
+                                        f[u][j] = max(f[u][j], f[u][j - k] + f[curr][k]);
+                                }
+                        }
+                }
+        }
+
+        int main(void) {
+                int root;
+                while (cin >> n >> v >> root) {
+                        cnt = 0;
+                        memset(head, -1, sizeof(head));
+                        memset(f, 0, sizeof(f));
+                        for (int i = 0; i < n; i++) {
+                                int di;
+                                cin >> wi[i] >> pi[i] >> di;
+                                addEdge(di, i);
+                        }
+                        treeDP(root);
+                        cout << f[root][v] << endl;
+                }
+        }
+        9. 背包问题的变化
+        1）题目：
+        输出01背包的具体方案
+        2）输入：
+        同01背包
+        3）测试文件：
+        4 10
+        2 4
+        3 5
+        4 6
+        5 10
+
+        5 20
+        3 2
+        7 3
+        10 5
+        15 6
+        16 10
+        4）源代码：
+        #include <iostream>
+        #include <algorithm>
+        #include <vector>
+        using namespace std;
+
+        int main(void) {
+                int n, v,  pi;
+
+                while (cin >> n >> v) {
+                        vector<int> dp(v + 1, 0);
+                        vector<int> wi(n + 1, 0);
+                        vector<vector<int>> g(n + 1,vector<int>(v + 1, 0));
+                        //g[i][v]=0 表示没放i时的f(i, v)较大，
+                        //g[i][v]=1 表示放进i时的f(i, v)较大
+                        for (int i = 0; i < n; i++) {
+                                cin >> wi[i] >> pi;
+                                for (int j = v; j >= 0; j--) {
+                                        if (j >= wi[i]) {
+                                                if (dp[j - wi[i]] + pi > dp[j]) {
+                                                        dp[j] = dp[j - wi[i]] + pi;
+                                                        g[i][j] = 1;
+                                                }
+                                        }
+                                }
+                        }
+
+                        int i = n - 1, j = v;
+                        while (i >= 0) {
+                                if (g[i][j] == 1) {
+                                        cout << "选了" << i + 1 << endl;
+                                        j -= wi[i];
+                                }
+                                else {
+                                        cout << "没选" << i  + 1<< endl;
+                                }
+                                i--;
+                        }
+                        cout << endl;
+                }
+        }
