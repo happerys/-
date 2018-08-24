@@ -459,7 +459,7 @@
         300 5 1
         400 3 0
         500 2 0
-        #include <bits/stdc++.h>
+        #include <bits/stdc++.h>（有漏洞）
         using namespace std;
 
         int main()
@@ -503,6 +503,66 @@
                 cout << dp[m][N] << endl;
             }
             return 0;
+        }
+        (已优化过)
+        #include <iostream>
+        #include <algorithm>
+        #include <vector>
+        using namespace std;
+
+        int MaxN = 60;
+        int MaxM = 32000;
+
+        int main()
+        {
+                int n, m;
+                while (cin >> n >> m)//总钱数，购买物品个数
+                {
+                        n = n / 10;
+
+                        vector<int> V(MaxN + 1);
+                        vector<int> P(MaxN + 1);
+                        vector<int> Q(MaxN + 1);
+                        vector<int> W(MaxN + 1);
+                        vector<vector<int>> f(MaxN + 1, vector<int>(MaxM + 1));
+                        vector<int> F(MaxM/10);
+                        vector<vector<int>> s(MaxN + 1, vector<int>(MaxN + 1));
+                        vector<int> s_ind(MaxN + 1);
+                        //初始化数据
+                        for (int i = 1; i <= m; i++) {
+                                cin >> V[i] >> P[i] >> Q[i] ;
+                                V[i] = V[i] / 10;//价格为10的倍数，优化
+                                W[i] = V[i] * P[i];
+
+                                if (Q[i]>0) {//即编号为i的物品为附件
+                                        s[Q[i]][s_ind[Q[i]]] = i;//该附件所属的主件Q[i]的附件值置为i，随着s_ind[Q[i]]的增加，二维数组的第二维坐标也在变动
+                                        s_ind[Q[i]]++;//该主件Q[i]的附件数量加一
+                                }
+                        }
+
+                        for (int i = 1; i <= m; i++) {
+                                //如果物品i是附件，跳过这次循环
+                                if (Q[i] > 0)
+                                        continue;
+                                //i是主件,对每个主件的附件组进行一次01背包                 
+                                for (int j = 0; j<s_ind[i]; j++) {
+                                        int temp = s[i][j];//i的某个附件的编号
+
+                                        for (int k = n - V[i]; k >= V[temp]; k--)//k的变动范围是该附件的价格到最大费用减主件价格
+                                                f[i][k] = max(f[i][k], f[i][k - V[temp]] + W[temp]);
+                                }
+
+                                //对所有主件以及其附件的物品组做一次背包,j相当于背包剩余容量，k相当于不断往背包里面加的物品组
+                                for (int j = n; j >= V[i]; j--) {
+                                        for (int k = j; k >= V[i]; k--) {
+                                                F[j] = max(F[j], F[j - k] + W[i] + f[i][k - V[i]]);
+                                        }
+                                }
+                        }
+                        cout << F[n] * 10 << endl;
+                        system("pause");
+                }
+                return 0;
         }
 
         4）测试文件：
