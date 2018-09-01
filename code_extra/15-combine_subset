@@ -1,0 +1,25 @@
+/************** 全组合   ***************/
+//遍历第k位的所有可能
+void dfs_subsets(vector<int> &nums, int count, int start, int k, vector<int> &v, vector<vector<int>> &res)
+{
+	if (count >= k)//单次递归终止条件
+	{
+		res.push_back(v);
+		return;
+	}
+
+	for (int i = start; i < nums.size(); i++)
+	{
+		v.push_back(nums[i]);
+		dfs_subsets(nums, count + 1, i + 1, k, v, res);
+		v.pop_back();
+	}
+}
+vector<vector<int>> subsets(vector<int>& nums)
+{
+	vector<vector<int>> res;
+	vector<int> v;
+	for (int i = 0; i <= nums.size(); i++)
+		dfs_subsets(nums, 0, 0, i, v, res);
+	return res;
+}
