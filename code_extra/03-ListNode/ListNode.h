@@ -71,6 +71,32 @@ void printList(ListNode *pHead)
 	cout << endl;
 }
 
+//划分链表
+//输入描述：给定一个链表头结点head，和枢轴变量x
+//          将链表调整为左部分都小于ppivot的节点，中间部分都等于pivot的节点，有部分值都大于pivot的节点
+//          每个节点的相对顺序与原链表中节点的先后顺序一致
+ListNode *partition(ListNode *head, int x) {
+	ListNode *dummy = new ListNode(-1);
+	dummy->next = head;
+	ListNode *pre = dummy, *cur = head;;
+	while (pre->next && pre->next->val < x) pre = pre->next;
+	cur = pre;
+	while (cur->next) {
+		if (cur->next->val < x) {
+			ListNode *tmp = cur->next;
+			cur->next = tmp->next;
+			tmp->next = pre->next;
+			pre->next = tmp;
+			pre = pre->next;
+		}
+		else {
+			cur = cur->next;
+		}
+	}
+	return dummy->next;
+}
+
+
 //链表反转
 ListNode * ReverseList(ListNode *pHead)
 {
