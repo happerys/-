@@ -1,0 +1,39 @@
+//打印出汉诺塔的最优路径
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<string> state = {"[left]", "[mid]", "[right]"};
+
+void move(int x, int y)
+{
+	cout << "move from " << state[x].c_str()  <<  " to " << state[y].c_str() <<endl;
+}
+
+void hanoi(int n, int left, int mid, int right) {
+
+	if (n == 1)
+	{
+		move(left, right);
+		return;
+	}
+		
+	hanoi(n - 1, left, right, mid);
+	move(left, right);
+	hanoi(n - 1, mid, left, right);
+}
+
+void solution(int n)
+{
+	hanoi(n, 0, 1, 2 );
+
+}
+
+int main() {
+	int N;
+	while (cin >> N)
+	{
+		solution(N);
+	}
+	return 0;
+}
